@@ -161,7 +161,7 @@ function generateBoard() {
 function generateKeyboard() {
     const keyboardLayout = [
       "e r t y u ı o p ğ ü", // Top row
-      "a s d f g h j k l ş İ", // Middle row
+      "a s d f g h j k l ş i", // Middle row
       "enter z c v b n m ö ç delete" // Bottom row with repositioned keys
     ];
   
@@ -172,7 +172,7 @@ function generateKeyboard() {
   
       row.split(" ").forEach((key) => {
         const keyButton = document.createElement("button");
-        keyButton.textContent = key.toUpperCase();
+        keyButton.textContent = key.toLocaleUpperCase("tr-TR")
         keyButton.classList.add("key");
   
         if (key === "delete") {
@@ -220,7 +220,9 @@ function updateTiles() {
     const tiles = row.children;
   
     for (let i = 0; i < targetWord.length; i++) {
-      tiles[i].textContent = currentGuess[i] || ""; // Tile'a harf ekleniyor
+        tiles[i].textContent = currentGuess[i]
+        ? currentGuess[i].toLocaleUpperCase("tr-TR")
+        : ""; // Tile'a harf ekleniyor
     }
   }
   
@@ -250,7 +252,7 @@ function deleteLetter() {
 function findKeyButton(letter) {
     const keyboardKeys = document.querySelectorAll(".keyboard-row .key");
     const key = Array.from(keyboardKeys).find(
-      (key) => key.textContent.trim().toLowerCase() === letter.toLowerCase()
+      (key) => key.textContent.trim().toLocaleLowerCase("tr-TR") === letter.toLocaleLowerCase("tr-TR")
     );
   
     // Log işlemi: Hangi tuş seçildi veya bulunamadı?
@@ -777,7 +779,7 @@ function showSnackbar(message, duration = 3000) {
         return;
       } else {
         // Otherwise, show them the same hint letter again
-        alert(`MEMEDALİNİN ${hintLetter.toUpperCase()} Sİ 👽`);
+        alert(`MEMEDALİNİN ${hintLetter.toLocaleUpperCase("tr-TR")} Sİ 👽`);
         return;
       }
     }
@@ -791,7 +793,7 @@ function showSnackbar(message, duration = 3000) {
       const tiles = rowElement.children;
       let guessedWord = "";
       for (let t = 0; t < tiles.length; t++) {
-        guessedWord += tiles[t].textContent.trim().toLowerCase();
+        guessedWord += tiles[t].textContent.trim().toLocaleLowerCase("tr-TR");
       }
       for (let char of guessedWord) {
         guessedLetters.add(char);
@@ -801,7 +803,7 @@ function showSnackbar(message, duration = 3000) {
     // 2) Build an array of unrevealed letters from targetWord
     const unrevealedLetters = [];
     for (let i = 0; i < targetWord.length; i++) {
-      const letter = targetWord[i].toLowerCase();
+      const letter = targetWord[i].toLocaleLowerCase("tr-TR");
       if (!guessedLetters.has(letter)) {
         unrevealedLetters.push(letter);
       }
@@ -818,16 +820,16 @@ function showSnackbar(message, duration = 3000) {
     hintLetter = unrevealedLetters[randomIndex]; // Store globally
   
     // 4) Show it to the user
-    alert(`MEMEDALİNİN ${hintLetter.toUpperCase()} Sİ 👽`);
+    alert(`MEMEDALİNİN ${hintLetter.toLocaleUpperCase("tr-TR")} Sİ 👽`);
   }
 
   function hasUserGuessedLetter(letter) {
-    letter = letter.toLowerCase(); // normalize
+    letter = letter.toLocaleLowerCase("tr-TR"); // normalize
     for (let r = 0; r < currentRow; r++) {
       const rowElement = board.children[r];
       const tiles = rowElement.children;
       for (let t = 0; t < tiles.length; t++) {
-        if (tiles[t].textContent.trim().toLowerCase() === letter) {
+        if (tiles[t].textContent.trim().toLocaleLowerCase("tr-TR") === letter) {
           return true; // Found the letter in the guesses
         }
       }
@@ -990,7 +992,7 @@ function showSnackbar(message, duration = 3000) {
   
     // Create answer text (the actual 'cevap')
     const answerText = document.createElement("p");
-    answerText.textContent = `'${answer.toUpperCase()}'`;
+    answerText.textContent = `'${answer.toLocaleUpperCase("tr-TR")}'`;
     answerText.style.fontWeight = "bold";
     answerText.style.marginBottom = "8px";
   
@@ -1086,7 +1088,7 @@ function showSnackbar(message, duration = 3000) {
   
 // Physical keyboard input
 document.addEventListener("keydown", (event) => {
-  const key = event.key.toLowerCase();
+  const key = event.key.toLocaleLowerCase("tr-TR");
   if (key === "enter") {
     submitGuess();
   } else if (key === "backspace") {
