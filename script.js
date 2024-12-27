@@ -501,7 +501,7 @@ function submitGuess() {
       resultLine,
       hintLine,
       gridString,
-      "https://wordleturkce.bundle.app/"
+      "https://fsecgin.github.io/bebekdle/"
     ].join("\n\n");
   
     // 5) Use the Web Share API if available
