@@ -19,48 +19,55 @@ body {
   
   #top-navbar {
     width: 100%;
-    height: 52px; /* Set height of navbar */
-    background-color: #121212; /* Dark background color */
-    color: white; /* Default text color */
-    display: flex;
-    align-items: center; /* Vertically center content */
-    justify-content: center; /* Horizontally center the text (Wordle) */
-    position: fixed; /* Fix navbar at the top */
-    top: 0; /* Ensure it sticks to the top */
-    z-index: 1000; /* Make sure it's on top of other elements */
-    font-family: 'Rammetto One', cursive; /* Apply Rammetto One font */
-    font-size: 20px; /* Font size for Wordle */
-    color: #ff8bc7; /* Pink color for the text */
-}
+    height: 52px;
+    background-color: #121212;
+    color: #ff8bc7;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 2px solid #2a2a2a;
+    
+    /* === NEW: Use CSS Grid to make left, center, right columns === */
+    display: grid;
+    grid-template-columns: auto 1fr auto; 
+    align-items: center; /* vertically center all items in the row */
+    
+    font-family: 'Rammetto One', cursive; 
+    font-size: 20px;
+    /* The color and other properties can remain the same */
+  }
+  
 
-.navbar-icon {
-    position: absolute; /* Make the heart stay in the top-left corner */
-    left: 16px; /* Leave 16px space from the left of the navbar */
-    font-size: 1.5rem; /* Adjust icon size */
-    color: white; /* Keep the heart white for contrast */
-}
-
+  #round-info {
+    font-size: 1rem;
+    color: #FDD954;
+    font-weight: bold;
+  }
+  
 /* Container for the right icons */
 #navbar-icons-right {
-    position: absolute; 
-    right: 16px;      /* So they stay on the right edge */
-    display: flex;   
-    gap: 16px;        /* Space between the two icons */
-  }
-  
-  /* Style both icons in the top-right similarly */
-  #navbar-icons-right i {
-    font-size: 1.5rem;   /* Adjust to your liking */
-    cursor: pointer;     /* Make it clear they are clickable */
-    color: white;        /* Keep them white, or pick a color */
-    transition: color 0.2s ease-in-out;
-  }
-  
-  #navbar-icons-right i:hover {
-    color: #ff8bc7;       /* Hover color (same pink as 'Wordle' if you want) */
-  }
-  
+  color: #ffffff; /* or another off-white color */
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-right: 16px;
+}
 
+#navbar-icons-right i:hover {
+  color: #ff8bc7; /* Pink on hover */
+}
+
+#navbar-left {
+  display: flex;           /* so heart + round appear in a row */
+  align-items: center;
+  gap: 8px;                /* space between heart and round text */
+  margin-left: 16px;       /* small left padding from edge if you like */
+}
+
+#navbar-title {
+  text-align: center; /* just in case, but 1fr in the middle means it's centered horizontally */
+}
+  
 
 h1 {
     margin: 5px 0;
@@ -73,7 +80,7 @@ h1 {
     gap: 6px; /* Minimal spacing between rows */
     justify-content: center;
     margin: 5px 0; /* Minimal margin around the board */
-    margin-top: 64px; /* Add margin to account for navbar and 12px spacing */
+    margin-top: 66px; /* Add margin to account for navbar and 12px spacing */
     flex-shrink: 0; /* Prevent shrinking */
   }
   
@@ -314,7 +321,7 @@ h1 {
     }
   
     #game-board {
-      gap: 6px; /* Tighter gap between rows for compactness */
+      gap: 8spx; /* Tighter gap between rows for compactness */
       margin: 6px 0;
       margin-bottom: 6px; /* Minimal margin to save space */
       margin-top: 64px; /* Minimal margin to save space */
@@ -322,8 +329,8 @@ h1 {
     }
   
     .tile {
-      width: 60px; /* Original size */
-      height: 60px; /* Original size */
+      width: 48px; /* Original size */
+      height: 48px;
       font-size: 32px; /* Original size */
       touch-action: manipulation;
     }
