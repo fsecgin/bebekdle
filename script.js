@@ -41,6 +41,7 @@ async function loadWordList() {
       console.error("The word list is empty. Cannot start the game.");
       return;
     }
+    displayRoundNumber();
 
     startGame(); // Start the game after loading the word list
   } catch (error) {
@@ -109,6 +110,26 @@ function createCountdownElement() {
     countdownContainer.dataset.intervalId = intervalId;
   
     return countdownContainer;
+  }
+  
+  function displayRoundNumber() {
+    // Just to confirm it’s being called:
+    console.log("displayRoundNumber called.");
+  
+    const now = new Date();
+    const timeDiff = now - serverStartTime;
+    const intervalsPassed = Math.floor(timeDiff / FOUR_HOURS_IN_MS);
+  
+    // If you want the first 4-hour block to be “R1”, add 1:
+    const currentRound = intervalsPassed + 1;
+  
+    // Update the text content of #round-info
+    const roundInfoEl = document.getElementById("round-info");
+    if (roundInfoEl) {
+      roundInfoEl.textContent = `R${currentRound}`;
+    } else {
+      console.warn("No #round-info element found in the DOM.");
+    }
   }
   
 
@@ -466,6 +487,7 @@ function submitGuess() {
     // Create SHARE button
     const shareButton = document.createElement("button");
     shareButton.textContent = "PAYLAŞ 📤";
+    shareButton.style.backgroundColor = "pink";
     shareButton.onclick = () => {
       shareResultsNative(rowsUsed);
     };
@@ -491,7 +513,8 @@ function submitGuess() {
     const gridString = buildEmojiGrid(rowsUsed);
   
     // 2) "Bebekdle Türkçe X/6" (X is the row used)
-    const resultLine = `Bebekdle Türkçe ${rowsUsed}/6`;
+    const roundText = document.getElementById("round-info")?.textContent || "";
+    const resultLine = `Bebekdle ${roundText} ${rowsUsed}/6`; 
   
     // 3) Did we use a hint?
     const hintLine = didUseHint
