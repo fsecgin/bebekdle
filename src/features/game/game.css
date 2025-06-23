@@ -1,0 +1,107 @@
+/**
+ * Game Styles
+ * Oyun tahtası ve game logic stilleri
+ */
+
+/* Game board styles are included in ui.css */
+/* This file can be used for game-specific styles that don't belong in ui.css */
+
+/* Game container adjustments */
+#game-board-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0; /* Allow flexbox to shrink */
+}
+
+/* Debug styles (hidden by default) */
+#debug-info {
+  display: none !important;
+}
+
+/* Game state indicators */
+.game-won .game-board {
+  pointer-events: none;
+}
+
+.game-lost .game-board {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Loading state for game */
+.game-loading .game-board {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.game-loading .keyboard {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Game completion animations */
+.game-complete .tile.correct {
+  animation: celebration 0.6s ease-in-out;
+  animation-delay: calc(var(--tile-index, 0) * 0.1s);
+}
+
+@keyframes celebration {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+/* Responsive game layout */
+@media (max-width: 480px) {
+  #game-board-container {
+    padding: var(--spacing-sm) 0;
+  }
+  
+  #debug-info {
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
+    font-size: 10px;
+    max-width: 150px;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  #game-board-container {
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .game-board {
+    gap: var(--spacing-xs);
+  }
+  
+  .row {
+    gap: var(--spacing-xs);
+  }
+  
+  .tile {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* Print styles for game */
+@media print {
+  #debug-info {
+    display: none;
+  }
+  
+  .game-board {
+    break-inside: avoid;
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "bebekdle",
+  "version": "1.0.0",
+  "description": "4 Saatlik Türkçe Bebekdle Oyunu 💖",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "dev-network": "python3 -m http.server 3000 --bind 0.0.0.0",
+    "dev-node": "node server.js",
+    "dev-local": "node server.js -l",
+    "start": "node server.js",
+    "start-local": "node server.js --local",
+    "build": "node build.js",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "keywords": ["wordle", "turkish", "game", "bebekdle"],
+  "author": "Furkan",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^6.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fsecgin/bebekdle.git"
+  },
+  "homepage": "https://fsecgin.github.io/bebekdle/"
+}

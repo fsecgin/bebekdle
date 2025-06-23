@@ -1,0 +1,141 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Development servers (contains IP addresses and network info)
+server.js
+server-*.js
+start-network.sh
+start-*.sh
+*.sh
+
+# Alternative config files
+package-webpack.json
+webpack.config.js
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Logs
+logs/
+*.log
+debug.log
+error.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+.nyc_output/
+
+# ESLint cache
+.eslintcache
+
+# Jest
+.jest/
+
+# Webpack
+.webpack/
+
+# Parcel
+.parcel-cache/
+
+# Temporary folders
+tmp/
+temp/
+
+# Git specific
+.git/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Editor backup files
+*~
+.#*
+#*#
+
+# Test files (if any)
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation drafts
+docs/drafts/
+
+# Local configuration files
+config.local.js
+.env.local
+
+# Development tools config
+.prettierrc
+.eslintrc.*
+babel.config.js
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Performance monitoring
+.perflog
+
+# Security sensitive files
+*.pem
+*.key
+*.cert
+*.crt
+secrets/
+private/
+
+# Local development scripts
+dev-*.sh
+local-*.sh
+network-*.sh
+
+# IP address logs or configs
+ip-config.txt
+network-info.txt
