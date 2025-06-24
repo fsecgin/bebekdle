@@ -16,6 +16,7 @@ export class Navbar {
     // Event callbacks
     this.onInfoClick = null;
     this.onHintClick = null;
+    this.onMultiplayerClick = null;
     
     this.initialize();
   }
@@ -63,6 +64,9 @@ export class Navbar {
     
     // Hint icon
     this.hintIcon = this.container.querySelector('#hint-icon');
+    
+    // Multiplayer icon
+    this.multiplayerIcon = this.container.querySelector('#multiplayer-icon');
   }
 
   /**
@@ -78,6 +82,12 @@ export class Navbar {
     if (this.hintIcon) {
       on(this.hintIcon, 'click', () => {
         if (this.onHintClick) this.onHintClick();
+      });
+    }
+    
+    if (this.multiplayerIcon) {
+      on(this.multiplayerIcon, 'click', () => {
+        if (this.onMultiplayerClick) this.onMultiplayerClick();
       });
     }
   }

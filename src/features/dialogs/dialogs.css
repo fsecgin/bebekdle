@@ -220,7 +220,212 @@
   font-size: var(--font-size-xl);
 }
 
-/* ===== HINT DIALOG ===== */
+/* ===== MULTIPLAYER DIALOG ===== */
+.multiplayer-dialog {
+  max-width: 450px;
+  min-height: 300px;
+}
+
+.multiplayer-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.multiplayer-header h2 {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary-dark);
+  margin-bottom: var(--spacing-sm);
+}
+
+.multiplayer-header p {
+  color: #666;
+  font-size: var(--font-size-base);
+}
+
+.multiplayer-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.option-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border: 2px solid #e0e0e0;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background: white;
+}
+
+.option-card:hover {
+  border-color: var(--color-primary);
+  background: #fef7f7;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.option-icon {
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+.option-content h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.option-content p {
+  font-size: var(--font-size-sm);
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Multiplayer Form */
+.multiplayer-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group label {
+  font-weight: var(--font-weight-semibold);
+  color: #333;
+  font-size: var(--font-size-sm);
+}
+
+.form-group input {
+  padding: var(--spacing-md);
+  border: 2px solid #e0e0e0;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-primary);
+  transition: border-color var(--transition-normal);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(240, 28, 110, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+.form-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.form-buttons .dialog-button {
+  flex: 1;
+  margin: 0;
+}
+
+.dialog-button.secondary {
+  background-color: #6c757d;
+}
+
+.dialog-button.secondary:hover {
+  background-color: #545b62;
+}
+
+.dialog-button.primary {
+  background-color: var(--color-primary-dark);
+}
+
+/* Loading state */
+.multiplayer-loading {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.loading-spinner {
+  font-size: 48px;
+  animation: spin 2s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.multiplayer-loading p {
+  color: #666;
+  font-size: var(--font-size-base);
+}
+
+/* Close button */
+.dialog-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-normal);
+}
+
+.dialog-close:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* Error message */
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  border: 1px solid #fcc;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .multiplayer-dialog {
+    max-width: 340px;
+    min-height: auto;
+  }
+  
+  .option-card {
+    padding: var(--spacing-md);
+  }
+  
+  .option-icon {
+    font-size: 20px;
+    width: 32px;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+  }
+}
 .dialog-buttons {
   display: flex;
   flex-direction: column;

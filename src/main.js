@@ -19,6 +19,10 @@ import { WinDialog } from './features/dialogs/WinDialog.js';
 import { LoseDialog } from './features/dialogs/LoseDialog.js';
 import { HintDialog } from './features/dialogs/HintDialog.js';
 import { InfoDialog } from './features/dialogs/InfoDialog.js';
+import { MultiplayerDialog } from './features/dialogs/MultiplayerDialog.js';
+
+// Services
+import MultiplayerService from './shared/services/MultiplayerService.js';
 
 /**
  * Ana Bebekdle Uygulama Sınıfı
@@ -30,6 +34,10 @@ class BebekdleApp {
     this.keyboard = null;
     this.navbar = null;
     this.snackbar = null;
+    
+    // Multiplayer
+    this.isMultiplayer = false;
+    this.multiplayerInfo = null;
     
     this.init();
   }
@@ -55,6 +63,9 @@ class BebekdleApp {
       
       // Event listeners'ları ayarla
       this.setupEventListeners();
+      
+      // URL'den room ID kontrol et
+      this.checkUrlForRoom();
       
       // Loading screen'i gizle
       this.hideLoading();
@@ -123,6 +134,7 @@ class BebekdleApp {
     // Navbar ikonları
     this.navbar.onInfoClick = () => this.showInfoDialog();
     this.navbar.onHintClick = () => this.showHintDialog();
+    this.navbar.onMultiplayerClick = () => this.showMultiplayerDialog();
     
     // Debug shortcut (Ctrl+Shift+D)
     on(document, 'keydown', (event) => {
@@ -204,6 +216,11 @@ class BebekdleApp {
 
     // Başarılı tahmin
     const { guess, result: guessResult, gameResult, row } = result;
+    
+    // Multiplayer update
+    if (this.isMultiplayer) {
+      await this.updateMultiplayerProgress(gameResult, guessResult);
+    }
     
     // DOĞRU ROW'da animasyonları çalıştır
     await this.gameBoard.animateRowResults(gameResult.currentRow, guessResult.letterResults);
@@ -318,9 +335,135 @@ class BebekdleApp {
   }
 
   /**
-   * Hata mesajı gösterir
-   * @param {string} message - Hata mesajı
+   * Multiplayer dialogunu gösterir
    */
+  showMultiplayerDialog() {
+    const multiplayerDialog = new MultiplayerDialog({
+      onRoomJoined: (roomInfo) => this.handleRoomJoined(roomInfo),
+      onCancel: () => console.log('Multiplayer cancelled')
+    });
+    
+    multiplayerDialog.show();
+  }
+
+  /**
+   * Room'a katılınca çağrılır
+   * @param {Object} roomInfo - Room bilgileri
+   */
+  async handleRoomJoined(roomInfo) {
+    console.log('🎮 Multiplayer room joined:', roomInfo);
+    
+    this.isMultiplayer = true;
+    this.multiplayerInfo = roomInfo;
+    
+    // Multiplayer callbacks setup
+    this.setupMultiplayerCallbacks();
+    
+    // UI feedback
+    this.snackbar.show(`💕 ${roomInfo.roomId} odasına katıldın!`);
+    
+    // URL'i güncelle (room ID ile)
+    if (history.pushState) {
+      const newUrl = `${window.location.pathname}?room=${roomInfo.roomId}`;
+      history.pushState(null, '', newUrl);
+    }
+  }
+
+  /**
+   * Multiplayer callback'lerini ayarlar
+   */
+  setupMultiplayerCallbacks() {
+    // Player updates
+    MultiplayerService.onPlayerUpdate = (player) => {
+      this.handlePlayerUpdate(player);
+    };
+    
+    // Player join
+    MultiplayerService.onPlayerJoin = (player) => {
+      this.snackbar.show(`👋 ${player.name} odaya katıldı!`);
+    };
+    
+    // Player leave  
+    MultiplayerService.onPlayerLeave = (player) => {
+      this.snackbar.show(`👋 ${player.name} odadan ayrıldı`);
+    };
+    
+    // Game complete
+    MultiplayerService.onGameComplete = (player) => {
+      this.snackbar.show(`🏆 ${player.name} oyunu tamamladı!`);
+    };
+  }
+
+  /**
+   * Diğer oyuncunun progress update'ini işler
+   * @param {Object} player - Player bilgileri
+   */
+  handlePlayerUpdate(player) {
+    const messages = [
+      `💫 ${player.name} ${player.lettersFound} harf buldu!`,
+      `⚡ ${player.name} ${player.currentAttempt}. denemede!`,
+      `🔥 ${player.name} yazıyor...`,
+      `🎯 ${player.name} ilerliyor!`
+    ];
+    
+    // Random message seç
+    const message = messages[Math.floor(Math.random() * messages.length)];
+    this.snackbar.show(message);
+  }
+
+  /**
+   * Multiplayer progress update gönder
+   * @param {Object} gameResult - Game result
+   * @param {Object} guessResult - Guess result
+   */
+  async updateMultiplayerProgress(gameResult, guessResult) {
+    try {
+      await MultiplayerService.updateProgress(
+        gameResult.attemptsUsed,
+        guessResult.correctLetters,
+        '', // Current guess (boş çünkü tahmin tamamlandı)
+        gameResult.state === 'won'
+      );
+    } catch (error) {
+      console.error('Multiplayer update failed:', error);
+    }
+  }
+
+  // URL'den room ID'yi kontrol et
+  checkUrlForRoom() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('room');
+    
+    if (roomId && /^[A-Z0-9]{6}$/.test(roomId)) {
+      // URL'de geçerli room ID var, auto-join dialog göster
+      setTimeout(() => {
+        this.showAutoJoinDialog(roomId);
+      }, 1000);
+    }
+  }
+
+  /**
+   * URL'deki room için auto-join dialog
+   * @param {string} roomId - Room ID
+   */
+  showAutoJoinDialog(roomId) {
+    const playerName = prompt(`Oda ${roomId}'e katılmak için adınızı girin:`);
+    
+    if (playerName && playerName.trim()) {
+      MultiplayerService.joinRoom(roomId, playerName.trim())
+        .then(() => {
+          this.handleRoomJoined({
+            roomId,
+            playerName: playerName.trim(),
+            mode: 'join'
+          });
+        })
+        .catch(error => {
+          console.error('Auto-join failed:', error);
+          this.snackbar.show('Odaya katılırken hata oluştu');
+        });
+    }
+  }
   showError(message) {
     this.snackbar.show(message);
   }

@@ -14,11 +14,19 @@
     "build": "node build.js",
     "deploy": "npm run build && gh-pages -d dist"
   },
-  "keywords": ["wordle", "turkish", "game", "bebekdle"],
+  "keywords": [
+    "wordle",
+    "turkish",
+    "game",
+    "bebekdle"
+  ],
   "author": "Furkan",
   "license": "MIT",
   "devDependencies": {
     "gh-pages": "^6.1.0"
+  },
+  "dependencies": {
+    "firebase": "^10.14.1"
   },
   "repository": {
     "type": "git",
