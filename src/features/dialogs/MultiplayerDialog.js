@@ -25,8 +25,14 @@ export class MultiplayerDialog {
     this.create();
     document.body.appendChild(this.overlay);
     
-    // 🔥 Block game keyboard input
+    // 🔥 Block game keyboard input (but allow typing in inputs)
     this.keyboardHandler = (e) => {
+      // 🔥 Allow typing in input fields
+      if (e.target.tagName === 'INPUT') {
+        return; // Let input handle it
+      }
+      
+      // Block game keys only when not in input
       if (/^[a-zğüşıçöA-ZĞÜŞİÇÖ]$/i.test(e.key) || e.key === 'Enter' || e.key === 'Backspace') {
         e.preventDefault();
         e.stopPropagation();
