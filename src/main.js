@@ -43,6 +43,32 @@ class BebekdleApp {
   }
 
   /**
+   * 🔥 Multiplayer progress update gönder
+   * @param {Object} gameResult - Game result
+   * @param {Object} guessResult - Guess result
+   */
+  async updateMultiplayerProgress(gameResult, guessResult) {
+    if (!this.isMultiplayer) {
+      console.log('🚫 Not in multiplayer mode, skipping update');
+      return;
+    }
+    
+    console.log('📡 Sending multiplayer progress update:', { gameResult, guessResult });
+    
+    try {
+      await MultiplayerService.updateProgress(
+        gameResult.attemptsUsed,
+        guessResult.correctLetters || 0,
+        '', // Current guess (boş çünkü tahmin tamamlandı)
+        gameResult.state === 'won'
+      );
+      console.log('✅ Multiplayer progress update sent successfully');
+    } catch (error) {
+      console.error('❌ Multiplayer update failed:', error);
+    }
+  }
+
+  /**
    * Uygulamayı başlatır
    */
   async init() {

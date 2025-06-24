@@ -27,6 +27,9 @@ class MultiplayerService {
     this.isAuthenticated = false;
     this.isInitialized = false;
     
+    // Player state tracking for notifications
+    this.playerStates = new Map();
+    
     // Initialize Firebase when constructor is called
     this.init();
     
@@ -220,68 +223,187 @@ class MultiplayerService {
   }
 
   /**
-   * Listen to room updates
+   * 🔥 FIXED: Real-time room listening with proper notifications
    */
   listenToRoom() {
     if (!this.roomId) return;
 
     const playersRef = this.database.ref(`rooms/${this.roomId}/players`);
     
-    playersRef.on('value', (snapshot) => {
-      const players = snapshot.val();
-      if (!players) return;
+    // 🔥 Track existing players to avoid duplicate join notifications
+    let initialLoad = true;
+    
+    // Listen to individual player changes for real-time updates
+    playersRef.on('child_added', (snapshot) => {
+      const playerId = snapshot.key;
+      const playerData = snapshot.val();
+      
+      // Skip own addition
+      if (playerId === this.playerId) return;
+      
+      // Store initial state
+      this.playerStates.set(playerId, playerData);
+      
+      // 🔥 Only show join notification for new players (not initial load)
+      if (!initialLoad && this.onPlayerJoin) {
+        this.onPlayerJoin({ 
+          id: playerId, 
+          ...playerData,
+          notification: `👋 ${playerData.name} odaya katıldı!`,
+          type: 'player_joined'
+        });
+      }
+    });
 
-      // Find other players
-      const otherPlayers = Object.entries(players)
-        .filter(([id, player]) => id !== this.playerId)
-        .map(([id, player]) => ({ id, ...player }));
+    // Mark initial load complete after a short delay
+    setTimeout(() => {
+      initialLoad = false;
+      console.log('📋 Initial player load complete, ready for real-time notifications');
+    }, 1000);
 
-      // Trigger callbacks
-      this.handlePlayerUpdates(otherPlayers);
+    playersRef.on('child_changed', (snapshot) => {
+      const playerId = snapshot.key;
+      const newData = snapshot.val();
+      
+      // Skip own updates
+      if (playerId === this.playerId) return;
+      
+      const oldData = this.playerStates.get(playerId) || {};
+      this.playerStates.set(playerId, newData);
+      
+      console.log('🔄 Player update detected:', { playerId, oldData, newData });
+      
+      // 🔥 Real-time notifications based on changes
+      this.handleRealTimeUpdate(playerId, oldData, newData);
+    });
+
+    playersRef.on('child_removed', (snapshot) => {
+      const playerId = snapshot.key;
+      const playerData = snapshot.val();
+      
+      // Remove from state tracking
+      this.playerStates.delete(playerId);
+      
+      // 👋 Player left notification
+      if (this.onPlayerLeave) {
+        this.onPlayerLeave({ 
+          id: playerId, 
+          ...playerData,
+          notification: `👋 ${playerData.name} odadan ayrıldı`,
+          type: 'player_left'
+        });
+      }
     });
   }
 
   /**
-   * Handle player updates from Firebase
-   * @param {Array} otherPlayers - Other players in the room
+   * 🚀 NEW: Handle real-time player updates with specific notifications
    */
-  handlePlayerUpdates(otherPlayers) {
-    otherPlayers.forEach(player => {
-      // Player join notification
-      if (this.onPlayerJoin && player.isOnline) {
-        this.onPlayerJoin(player);
+  handleRealTimeUpdate(playerId, oldData, newData) {
+    const player = { id: playerId, ...newData };
+    
+    // 🎯 Specific notification types based on what changed
+    
+    // 1. First attempt made
+    if (oldData.currentAttempt === 0 && newData.currentAttempt === 1) {
+      if (this.onPlayerUpdate) {
+        this.onPlayerUpdate({
+          ...player,
+          notification: `${newData.name} ilk tahminini yaptı!`,
+          type: 'first_attempt'
+        });
       }
-
-      // Player leave notification
-      if (this.onPlayerLeave && !player.isOnline) {
-        this.onPlayerLeave(player);
+    }
+    
+    // 2. Subsequent attempts (no letters found)
+    else if (newData.currentAttempt > oldData.currentAttempt && newData.lettersFound === 0) {
+      if (this.onPlayerUpdate) {
+        this.onPlayerUpdate({
+          ...player,
+          notification: `${newData.name} ${newData.currentAttempt}. tahminini yaptı`,
+          type: 'attempt_no_letters'
+        });
       }
-
-      // Progress updates
-      if (this.onPlayerUpdate && player.isOnline) {
-        this.onPlayerUpdate(player);
+    }
+    
+    // 3. Letters found in attempt
+    else if (newData.lettersFound > oldData.lettersFound) {
+      const lettersFound = newData.lettersFound - oldData.lettersFound;
+      if (this.onPlayerUpdate) {
+        this.onPlayerUpdate({
+          ...player,
+          notification: `${newData.name}, ${newData.currentAttempt}. tahmininde ${newData.lettersFound} harf buldu!`,
+          type: 'letters_found'
+        });
       }
-
-      // Game completion
-      if (this.onGameComplete && player.isCompleted) {
-        this.onGameComplete(player);
+    }
+    
+    // 4. Game completed successfully
+    if (!oldData.isCompleted && newData.isCompleted) {
+      if (this.onGameComplete) {
+        this.onGameComplete({
+          ...player,
+          notification: `${newData.name} cevabı buldu! 🎉`,
+          type: 'game_won'
+        });
       }
-    });
+    }
+    
+    // 5. Game failed (6 attempts, not completed)
+    if (newData.currentAttempt >= 6 && !newData.isCompleted && oldData.currentAttempt < 6) {
+      if (this.onPlayerUpdate) {
+        this.onPlayerUpdate({
+          ...player,
+          notification: `${newData.name} cevabı bulamadı 😢`,
+          type: 'game_lost'
+        });
+      }
+    }
+    
+    // 6. Online status changes
+    if (oldData.isOnline !== newData.isOnline) {
+      if (newData.isOnline) {
+        if (this.onPlayerJoin) {
+          this.onPlayerJoin({
+            ...player,
+            notification: `${newData.name} tekrar bağlandı`,
+            type: 'reconnected'
+          });
+        }
+      } else {
+        if (this.onPlayerLeave) {
+          this.onPlayerLeave({
+            ...player,
+            notification: `${newData.name} bağlantısını kaybetti`,
+            type: 'disconnected'
+          });
+        }
+      }
+    }
   }
 
   /**
-   * Update player progress
+   * Update player progress (now triggers real-time notifications)
    * @param {number} attempt - Current attempt number (1-6)
    * @param {number} lettersFound - Number of correct letters found
    * @param {string} currentGuess - Current guess being typed
    * @param {boolean} isCompleted - Whether game is completed
    */
   async updateProgress(attempt, lettersFound, currentGuess = '', isCompleted = false) {
-    if (!this.isConnected || !this.canUpdate()) return;
+    if (!this.isConnected || !this.canUpdate()) {
+      console.warn('❌ Cannot update progress:', { isConnected: this.isConnected, canUpdate: this.canUpdate() });
+      return;
+    }
 
     // Validate inputs
-    if (attempt < 0 || attempt > 6) return;
-    if (lettersFound < 0 || lettersFound > 5) return;
+    if (attempt < 0 || attempt > 6) {
+      console.warn('❌ Invalid attempt:', attempt);
+      return;
+    }
+    if (lettersFound < 0 || lettersFound > 5) {
+      console.warn('❌ Invalid lettersFound:', lettersFound);
+      return;
+    }
 
     const cleanGuess = this.sanitizeInput(currentGuess);
     const now = Date.now();
@@ -300,10 +422,15 @@ class MultiplayerService {
     }
 
     try {
+      console.log('📡 Updating progress:', { attempt, lettersFound, isCompleted });
+      
+      // 🔥 This update will trigger real-time notifications to other players
       await this.database.ref().update(updates);
       this.lastUpdate = now;
+      
+      console.log('✅ Progress updated successfully');
     } catch (error) {
-      console.error('Failed to update progress:', error);
+      console.error('❌ Failed to update progress:', error);
     }
   }
 
@@ -338,6 +465,10 @@ class MultiplayerService {
     
     await this.database.ref().update(updates);
 
+    // Clean up listeners
+    const playersRef = this.database.ref(`rooms/${this.roomId}/players`);
+    playersRef.off();
+
     // Clean up after 5 minutes
     setTimeout(async () => {
       try {
@@ -351,6 +482,7 @@ class MultiplayerService {
     this.playerId = null;
     this.playerName = null;
     this.isConnected = false;
+    this.playerStates.clear();
 
     console.log('👋 Left multiplayer room');
   }
