@@ -217,7 +217,7 @@ class BebekdleApp {
     // Başarılı tahmin
     const { guess, result: guessResult, gameResult, row } = result;
     
-    // Multiplayer update
+    // 🔥 Multiplayer update
     if (this.isMultiplayer) {
       await this.updateMultiplayerProgress(gameResult, guessResult);
     }
@@ -335,7 +335,7 @@ class BebekdleApp {
   }
 
   /**
-   * Multiplayer dialogunu gösterir
+   * 🔥 Multiplayer dialogunu gösterir
    */
   showMultiplayerDialog() {
     const multiplayerDialog = new MultiplayerDialog({
@@ -347,7 +347,7 @@ class BebekdleApp {
   }
 
   /**
-   * Room'a katılınca çağrılır
+   * 🔥 Room'a katılınca çağrılır
    * @param {Object} roomInfo - Room bilgileri
    */
   async handleRoomJoined(roomInfo) {
@@ -370,49 +370,47 @@ class BebekdleApp {
   }
 
   /**
-   * Multiplayer callback'lerini ayarlar
+   * 🔥 Multiplayer callback'lerini ayarlar
    */
   setupMultiplayerCallbacks() {
-    // Player updates
+    // Real-time specific notifications
     MultiplayerService.onPlayerUpdate = (player) => {
-      this.handlePlayerUpdate(player);
+      // Use specific notification text from the service
+      if (player.notification) {
+        this.snackbar.show(player.notification);
+      }
     };
     
-    // Player join
+    // Player join notifications
     MultiplayerService.onPlayerJoin = (player) => {
-      this.snackbar.show(`👋 ${player.name} odaya katıldı!`);
+      if (player.notification) {
+        this.snackbar.show(player.notification);
+      } else {
+        this.snackbar.show(`👋 ${player.name} odaya katıldı!`);
+      }
     };
     
-    // Player leave  
+    // Player leave notifications
     MultiplayerService.onPlayerLeave = (player) => {
-      this.snackbar.show(`👋 ${player.name} odadan ayrıldı`);
+      if (player.notification) {
+        this.snackbar.show(player.notification);
+      } else {
+        this.snackbar.show(`👋 ${player.name} odadan ayrıldı`);
+      }
     };
     
-    // Game complete
+    // Game completion notifications
     MultiplayerService.onGameComplete = (player) => {
-      this.snackbar.show(`🏆 ${player.name} oyunu tamamladı!`);
+      if (player.notification) {
+        this.snackbar.show(player.notification);
+      } else {
+        this.snackbar.show(`🏆 ${player.name} oyunu tamamladı!`);
+      }
     };
   }
 
   /**
-   * Diğer oyuncunun progress update'ini işler
-   * @param {Object} player - Player bilgileri
-   */
-  handlePlayerUpdate(player) {
-    const messages = [
-      `💫 ${player.name} ${player.lettersFound} harf buldu!`,
-      `⚡ ${player.name} ${player.currentAttempt}. denemede!`,
-      `🔥 ${player.name} yazıyor...`,
-      `🎯 ${player.name} ilerliyor!`
-    ];
-    
-    // Random message seç
-    const message = messages[Math.floor(Math.random() * messages.length)];
-    this.snackbar.show(message);
-  }
-
-  /**
-   * Multiplayer progress update gönder
+   * 🔥 Multiplayer progress update gönder
    * @param {Object} gameResult - Game result
    * @param {Object} guessResult - Guess result
    */
@@ -429,7 +427,9 @@ class BebekdleApp {
     }
   }
 
-  // URL'den room ID'yi kontrol et
+  /**
+   * 🔥 URL'den room ID'yi kontrol et
+   */
   checkUrlForRoom() {
     const urlParams = new URLSearchParams(window.location.search);
     const roomId = urlParams.get('room');
@@ -443,7 +443,7 @@ class BebekdleApp {
   }
 
   /**
-   * URL'deki room için auto-join dialog
+   * 🔥 URL'deki room için auto-join dialog
    * @param {string} roomId - Room ID
    */
   showAutoJoinDialog(roomId) {
@@ -464,6 +464,11 @@ class BebekdleApp {
         });
     }
   }
+
+  /**
+   * Hata mesajı gösterir
+   * @param {string} message - Hata mesajı
+   */
   showError(message) {
     this.snackbar.show(message);
   }
