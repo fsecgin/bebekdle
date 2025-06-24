@@ -171,10 +171,24 @@ class BebekdleApp {
   }
 
   /**
+   * 🔥 Check if game input should be blocked
+   * @returns {boolean} - True if input should be blocked
+   */
+  isGameInputBlocked() {
+    // Check if any dialog is open
+    return document.querySelector('.dialog-overlay') !== null;
+  }
+
+  /**
    * Fiziksel klavye girişini işler
    * @param {KeyboardEvent} event - Klavye eventi
    */
   handleKeyboardInput(event) {
+    // 🔥 Block input if dialog is open
+    if (this.isGameInputBlocked()) {
+      return; // Let dialog handle input
+    }
+    
     const key = event.key.toLowerCase();
     
     if (key === 'enter') {
