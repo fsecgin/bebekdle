@@ -24,6 +24,15 @@ export class MultiplayerDialog {
   show() {
     this.create();
     document.body.appendChild(this.overlay);
+    
+    // 🔥 Block game keyboard input
+    this.keyboardHandler = (e) => {
+      if (/^[a-zğüşıçöA-ZĞÜŞİÇÖ]$/i.test(e.key) || e.key === 'Enter' || e.key === 'Backspace') {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    document.addEventListener('keydown', this.keyboardHandler, true);
   }
 
   /**
@@ -163,9 +172,22 @@ export class MultiplayerDialog {
     const startButton = this.dialog.querySelector('#start-multiplayer');
     startButton.textContent = mode === 'create' ? 'Oda Oluştur' : 'Odaya Katıl';
     
-    // Focus first input
+    // 🔥 FIXED: Multiple focus attempts
     const playerNameInput = this.dialog.querySelector('#player-name');
-    playerNameInput.focus();
+    
+    const focusInput = () => {
+      playerNameInput.focus();
+      playerNameInput.select();
+    };
+    
+    // Try focus multiple times with different delays
+    setTimeout(focusInput, 50);
+    setTimeout(focusInput, 100);
+    setTimeout(focusInput, 200);
+    setTimeout(focusInput, 300);
+    
+    // Also focus on dialog click
+    this.dialog.addEventListener('click', focusInput);
   }
 
   /**
@@ -271,6 +293,12 @@ export class MultiplayerDialog {
    * Hide the dialog
    */
   hide() {
+    // 🔥 Remove keyboard handler
+    if (this.keyboardHandler) {
+      document.removeEventListener('keydown', this.keyboardHandler, true);
+      this.keyboardHandler = null;
+    }
+    
     if (this.overlay) {
       removeElement(this.overlay);
       this.overlay = null;

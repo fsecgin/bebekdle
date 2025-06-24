@@ -232,6 +232,24 @@ class MultiplayerService {
     
     // 🔥 Track existing players to avoid duplicate join notifications
     let initialLoad = true;
+    let initialPlayers = new Set();
+    
+    // 🔥 First, get all existing players (including self)
+    playersRef.once('value', (snapshot) => {
+      const players = snapshot.val() || {};
+      Object.keys(players).forEach(playerId => {
+        initialPlayers.add(playerId);
+        this.playerStates.set(playerId, players[playerId]);
+      });
+      
+      console.log('📋 Initial players loaded:', Array.from(initialPlayers));
+      
+      // Mark initial load complete
+      setTimeout(() => {
+        initialLoad = false;
+        console.log('📋 Initial load complete, ready for real-time notifications');
+      }, 500);
+    });
     
     // Listen to individual player changes for real-time updates
     playersRef.on('child_added', (snapshot) => {
@@ -241,25 +259,23 @@ class MultiplayerService {
       // Skip own addition
       if (playerId === this.playerId) return;
       
-      // Store initial state
-      this.playerStates.set(playerId, playerData);
-      
-      // 🔥 Only show join notification for new players (not initial load)
-      if (!initialLoad && this.onPlayerJoin) {
-        this.onPlayerJoin({ 
-          id: playerId, 
-          ...playerData,
-          notification: `👋 ${playerData.name} odaya katıldı!`,
-          type: 'player_joined'
-        });
+      // 🔥 Only show join notification for truly new players
+      if (!initialLoad && !initialPlayers.has(playerId)) {
+        console.log('👋 New player joined:', playerData.name);
+        if (this.onPlayerJoin) {
+          this.onPlayerJoin({ 
+            id: playerId, 
+            ...playerData,
+            notification: `👋 ${playerData.name} odaya katıldı!`,
+            type: 'player_joined'
+          });
+        }
       }
+      
+      // Always store player state
+      this.playerStates.set(playerId, playerData);
+      initialPlayers.add(playerId);
     });
-
-    // Mark initial load complete after a short delay
-    setTimeout(() => {
-      initialLoad = false;
-      console.log('📋 Initial player load complete, ready for real-time notifications');
-    }, 1000);
 
     playersRef.on('child_changed', (snapshot) => {
       const playerId = snapshot.key;
@@ -271,7 +287,14 @@ class MultiplayerService {
       const oldData = this.playerStates.get(playerId) || {};
       this.playerStates.set(playerId, newData);
       
-      console.log('🔄 Player update detected:', { playerId, oldData, newData });
+      console.log('🔄 Player update detected:', { 
+        playerId: playerId.substring(0, 8), 
+        playerName: newData.name,
+        oldAttempt: oldData.currentAttempt,
+        newAttempt: newData.currentAttempt,
+        oldLetters: oldData.lettersFound,
+        newLetters: newData.lettersFound
+      });
       
       // 🔥 Real-time notifications based on changes
       this.handleRealTimeUpdate(playerId, oldData, newData);
@@ -283,6 +306,7 @@ class MultiplayerService {
       
       // Remove from state tracking
       this.playerStates.delete(playerId);
+      initialPlayers.delete(playerId);
       
       // 👋 Player left notification
       if (this.onPlayerLeave) {
