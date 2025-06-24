@@ -25,15 +25,8 @@ export class MultiplayerDialog {
     this.create();
     document.body.appendChild(this.overlay);
     
-    // 🔥 Block ALL game keyboard input during dialog
-    this.keyboardHandler = (e) => {
-      // 🔥 Block ALL game keys, regardless of target
-      if (/^[a-zğüşıçöA-ZĞÜŞİÇÖ]$/i.test(e.key) || e.key === 'Enter' || e.key === 'Backspace') {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-    document.addEventListener('keydown', this.keyboardHandler, true);
+    // 🔥 No keyboard blocking - focus handles it
+    // Game will be paused anyway when dialog is open
   }
 
   /**
@@ -152,13 +145,6 @@ export class MultiplayerDialog {
     on(roomCodeInput, 'input', (e) => {
       e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     });
-    
-    // 🔥 Allow typing in room code input too
-    roomCodeInput.addEventListener('keydown', (e) => {
-      if (/^[a-zğüşıçöA-ZĞÜŞİÇÖ\d]$/i.test(e.key) || e.key === 'Backspace') {
-        e.stopPropagation();
-      }
-    });
   }
 
   /**
@@ -180,7 +166,7 @@ export class MultiplayerDialog {
     const startButton = this.dialog.querySelector('#start-multiplayer');
     startButton.textContent = mode === 'create' ? 'Oda Oluştur' : 'Odaya Katıl';
     
-    // 🔥 FIXED: Multiple focus attempts + input event handling
+    // 🔥 FIXED: Multiple focus attempts
     const playerNameInput = this.dialog.querySelector('#player-name');
     
     const focusInput = () => {
@@ -193,14 +179,6 @@ export class MultiplayerDialog {
     setTimeout(focusInput, 100);
     setTimeout(focusInput, 200);
     setTimeout(focusInput, 300);
-    
-    // 🔥 Allow typing in this specific input
-    playerNameInput.addEventListener('keydown', (e) => {
-      // Allow typing letters and numbers in name input
-      if (/^[a-zğüşıçöA-ZĞÜŞİÇÖ\d\s]$/i.test(e.key) || e.key === 'Backspace') {
-        e.stopPropagation(); // Don't let parent handler block this
-      }
-    });
     
     // Also focus on dialog click
     this.dialog.addEventListener('click', focusInput);
@@ -309,12 +287,6 @@ export class MultiplayerDialog {
    * Hide the dialog
    */
   hide() {
-    // 🔥 Remove keyboard handler
-    if (this.keyboardHandler) {
-      document.removeEventListener('keydown', this.keyboardHandler, true);
-      this.keyboardHandler = null;
-    }
-    
     if (this.overlay) {
       removeElement(this.overlay);
       this.overlay = null;
