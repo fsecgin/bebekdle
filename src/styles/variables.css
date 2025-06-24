@@ -1,0 +1,159 @@
+/**
+ * CSS Custom Properties (Variables)
+ * Tüm renk, boyut ve spacing değerleri
+ */
+
+:root {
+  /* Colors */
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-surface-variant: #2a2a2a;
+  
+  --color-primary: #ff8bc7;
+  --color-primary-dark: #f01c6e;
+  --color-primary-light: #ffb3d9;
+  
+  --color-secondary: #FDD954;
+  --color-secondary-dark: #e6c548;
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #cccccc;
+  --color-text-tertiary: #999999;
+  
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #ef4444;
+  
+  /* Game specific colors */
+  --color-tile-empty: #1e1e1e;
+  --color-tile-filled: #2a2a2a;
+  --color-tile-correct: #22c55e;
+  --color-tile-present: #eab308;
+  --color-tile-absent: #6b7280;
+  
+  --color-key-default: #333333;
+  --color-key-correct: #22c55e;
+  --color-key-present: #eab308;
+  --color-key-absent: #6b7280;
+  
+  /* Border colors */
+  --color-border: #333333;
+  --color-border-focus: #ffffff;
+  --color-border-filled: rgba(255, 255, 255, 0.5);
+  
+  /* Shadows */
+  --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.4);
+  
+  /* Typography */
+  --font-family-primary: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-display: 'Rammetto One', cursive;
+  --font-family-mono: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 0.75rem;   /* 12px */
+  --spacing-lg: 1rem;      /* 16px */
+  --spacing-xl: 1.5rem;    /* 24px */
+  --spacing-2xl: 2rem;     /* 32px */
+  --spacing-3xl: 3rem;     /* 48px */
+  --spacing-4xl: 4rem;     /* 64px */
+
+  /* Layout dimensions */
+  --navbar-height: 52px;
+  --max-content-width: 600px;
+  
+  /* Tile dimensions */
+  --tile-size: 50px;
+  --tile-size-mobile: 48px;
+  --tile-gap: 4px;
+  --tile-gap-row: 6px;
+  
+  /* Keyboard dimensions */
+  --key-height: 58px;
+  --key-width-base: 46px;
+  --key-width-special: 60px;
+  --key-gap: 2px;
+  --key-row-gap: 8px;
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Animation durations */
+  --duration-flip: 500ms;
+  --duration-shake: 300ms;
+  --duration-pop: 200ms;
+  --duration-tile-delay: 300ms;
+  
+  /* Z-index layers */
+  --z-navbar: 1000;
+  --z-snackbar: 9000;
+  --z-modal: 9999;
+  --z-loading: 10000;
+}
+
+/* Dark theme (default) */
+[data-theme="dark"] {
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-text-primary: #ffffff;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-surface-variant: #e9ecef;
+  --color-text-primary: #212529;
+  --color-text-secondary: #495057;
+  --color-text-tertiary: #6c757d;
+  --color-border: #dee2e6;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  :root {
+    --tile-size: var(--tile-size-mobile);
+    --font-size-base: 0.875rem;
+    --spacing-lg: 0.75rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --tile-size: 52px;
+    --max-content-width: 500px;
+  }
+}

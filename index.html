@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Bebekdle - 4 Saatlik Bebekdle Oyunu</title>
+  <meta name="description" content="Sevgiyle tasarlanmış Türkçe Wordle oyunu. 4 saatte bir yeni kelime! 💖">
+  <meta name="keywords" content="wordle, türkçe, kelime oyunu, bebekdle, puzzle">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Rammetto+One&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  
+  <!-- Firebase SDK v9 - Script Tags -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bebekdle - Türkçe Kelime Oyunu">
+  <meta property="og:description" content="Sevgiyle tasarlanmış Türkçe Wordle oyunu. 4 saatte bir yeni kelime! 💖">
+  <meta property="og:url" content="https://fsecgin.github.io/bebekdle/">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Bebekdle - Türkçe Kelime Oyunu">
+  <meta name="twitter:description" content="Sevgiyle tasarlanmış Türkçe Wordle oyunu. 4 saatte bir yeni kelime! 💖">
+</head>
+<body>
+  <script type="module" src="main.js"></script>
+  <!-- Top Navigation Bar -->
+  <div id="top-navbar">
+    <!-- Left: Heart + Round -->
+    <div id="navbar-left">
+      <span class="navbar-icon" id="heart-icon">💖</span>
+      <span id="round-info"></span>
+    </div>
+  
+    <!-- Center: Title -->
+    <div id="navbar-title">BEBEKDLE</div>
+  
+    <!-- Right: Icons -->
+    <div id="navbar-icons-right">
+      <i class="fa fa-info-circle" id="info-icon" title="Bilgi"></i>
+      <i class="fa fa-lightbulb" id="hint-icon" title="İpucu"></i>
+      <i class="fa fa-users" id="multiplayer-icon" title="Multiplayer"></i>
+    </div>
+  </div>
+
+  <!-- Main Game Container -->
+  <main id="game-container">
+    <!-- Game board will be inserted here by GameBoard component -->
+    <div id="game-board-container"></div>
+    
+    <!-- Keyboard will be inserted here by Keyboard component -->
+    <div id="keyboard-container"></div>
+  </main>
+
+  <!-- Snackbar for notifications -->
+  <div id="snackbar"></div>
+
+  <!-- Debug info (only in development) -->
+  <div id="debug-info" style="display: none;">
+    <div id="debug-answer" style="color: #ffeb3b; font-weight: bold;">Loading...</div>
+    <div id="debug-wordcount" style="color: #4caf50;">Words: 0</div>
+    <div id="debug-round" style="color: #2196f3;">Round: 0</div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div id="loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #121212, #1e1e1e); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000;">
+    <div class="loading-hearts" style="font-size: 48px; margin-bottom: 20px; animation: pulse 1.5s ease-in-out infinite;">💖</div>
+    <div class="loading-text" style="color: #ff8bc7; font-family: 'Quicksand', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 10px;">Bebekdle yükleniyor...</div>
+    <div class="loading-subtext" style="color: #cccccc; font-family: 'Quicksand', sans-serif; font-size: 14px; font-weight: 400;">💫 Sevgiyle hazırlanıyor...</div>
+  </div>
+
+  <!-- Error fallback -->
+  <div id="error-fallback" style="display: none;">
+    <h2>😢 Bir şeyler yanlış gitti</h2>
+    <p>Oyun yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.</p>
+    <button onclick="window.location.reload()">Sayfayı Yenile</button>
+  </div>
+</body>
+</html>

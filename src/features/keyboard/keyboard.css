@@ -1,0 +1,214 @@
+/**
+ * Keyboard Styles
+ * Klavye görünümü ve animasyonları
+ */
+
+.keyboard {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  gap: var(--key-row-gap);
+  width: 100%;
+  max-width: var(--max-content-width);
+  padding: var(--spacing-sm);
+  box-sizing: border-box;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--key-gap);
+}
+
+/* Base key styles */
+.key {
+  height: var(--key-height);
+  min-width: var(--key-width-base);
+  max-width: var(--key-width-base);
+  background-color: var(--color-key-default);
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+/* Special keys */
+.key-enter,
+.key-delete {
+  min-width: var(--key-width-special);
+  max-width: var(--key-width-special);
+  font-size: var(--font-size-lg);
+}
+
+/* Key states */
+.key.correct {
+  background-color: var(--color-key-correct) !important;
+  color: white !important;
+}
+
+.key.present {
+  background-color: var(--color-key-present) !important;
+  color: black !important;
+}
+
+.key.absent {
+  background-color: var(--color-key-absent) !important;
+  color: white !important;
+}
+
+.key.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hover effects */
+.key:hover:not(.disabled) {
+  background-color: var(--color-surface-variant);
+  transform: translateY(-1px);
+}
+
+.key:active:not(.disabled) {
+  transform: translateY(0);
+  transition: transform var(--transition-fast);
+}
+
+/* Focus styles */
+.key:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Row-specific adjustments */
+.keyboard-row-1 .key {
+  /* Top row - standard keys */
+}
+
+.keyboard-row-2 .key {
+  /* Middle row - standard keys */
+}
+
+.keyboard-row-3 .key:not([data-action]) {
+  /* Bottom row letters */
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .keyboard {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs);
+  }
+
+  /* Responsive key sizing */
+  .keyboard-row-1 .key {
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    font-size: 11px;
+    margin: 2px;
+  }
+
+  .keyboard-row-2 .key {
+    width: 28px;
+    min-width: 28px;
+    max-width: 28px;
+    font-size: 11px;
+    margin: 2px;
+  }
+
+  .keyboard-row-3 .key:not([data-action]) {
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    font-size: 11px;
+    margin: 2px;
+  }
+
+  .key-enter,
+  .key-delete {
+    width: 48px;
+    min-width: 48px;
+    max-width: 48px;
+    margin: 2px;
+  }
+
+  .key-enter {
+    font-size: 24px;
+  }
+
+  .key-delete {
+    font-size: 11px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 481px) and (max-width: 768px) {
+  .key {
+    min-width: 42px;
+    max-width: 42px;
+  }
+
+  .key-enter,
+  .key-delete {
+    min-width: 56px;
+    max-width: 56px;
+  }
+}
+
+/* Animation for key press */
+@keyframes keyPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.key:active:not(.disabled) {
+  animation: keyPress 0.1s ease-in-out;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .key {
+    transition: none;
+  }
+  
+  .key:hover:not(.disabled) {
+    transform: none;
+  }
+  
+  .key:active:not(.disabled) {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .key {
+    border: 2px solid var(--color-text-primary);
+  }
+  
+  .key.correct {
+    border-color: var(--color-key-correct);
+  }
+  
+  .key.present {
+    border-color: var(--color-key-present);
+  }
+  
+  .key.absent {
+    border-color: var(--color-key-absent);
+  }
+}

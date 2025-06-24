@@ -1,0 +1,677 @@
+/**
+ * Main CSS Entry Point
+ * Tüm stil dosyalarını import eder
+ */
+
+/* CSS Variables */
+/**
+ * CSS Custom Properties (Variables)
+ * Tüm renk, boyut ve spacing değerleri
+ */
+
+:root {
+  /* Colors */
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-surface-variant: #2a2a2a;
+  
+  --color-primary: #ff8bc7;
+  --color-primary-dark: #f01c6e;
+  --color-primary-light: #ffb3d9;
+  
+  --color-secondary: #FDD954;
+  --color-secondary-dark: #e6c548;
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #cccccc;
+  --color-text-tertiary: #999999;
+  
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #ef4444;
+  
+  /* Game specific colors */
+  --color-tile-empty: #1e1e1e;
+  --color-tile-filled: #2a2a2a;
+  --color-tile-correct: #22c55e;
+  --color-tile-present: #eab308;
+  --color-tile-absent: #6b7280;
+  
+  --color-key-default: #333333;
+  --color-key-correct: #22c55e;
+  --color-key-present: #eab308;
+  --color-key-absent: #6b7280;
+  
+  /* Border colors */
+  --color-border: #333333;
+  --color-border-focus: #ffffff;
+  --color-border-filled: rgba(255, 255, 255, 0.5);
+  
+  /* Shadows */
+  --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.4);
+  
+  /* Typography */
+  --font-family-primary: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-display: 'Rammetto One', cursive;
+  --font-family-mono: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 0.75rem;   /* 12px */
+  --spacing-lg: 1rem;      /* 16px */
+  --spacing-xl: 1.5rem;    /* 24px */
+  --spacing-2xl: 2rem;     /* 32px */
+  --spacing-3xl: 3rem;     /* 48px */
+  --spacing-4xl: 4rem;     /* 64px */
+
+  /* Layout dimensions */
+  --navbar-height: 52px;
+  --max-content-width: 600px;
+  
+  /* Tile dimensions */
+  --tile-size: 50px;
+  --tile-size-mobile: 48px;
+  --tile-gap: 4px;
+  --tile-gap-row: 6px;
+  
+  /* Keyboard dimensions */
+  --key-height: 58px;
+  --key-width-base: 46px;
+  --key-width-special: 60px;
+  --key-gap: 2px;
+  --key-row-gap: 8px;
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Animation durations */
+  --duration-flip: 500ms;
+  --duration-shake: 300ms;
+  --duration-pop: 200ms;
+  --duration-tile-delay: 300ms;
+  
+  /* Z-index layers */
+  --z-navbar: 1000;
+  --z-snackbar: 9000;
+  --z-modal: 9999;
+  --z-loading: 10000;
+}
+
+/* Dark theme (default) */
+[data-theme="dark"] {
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-text-primary: #ffffff;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-surface-variant: #e9ecef;
+  --color-text-primary: #212529;
+  --color-text-secondary: #495057;
+  --color-text-tertiary: #6c757d;
+  --color-border: #dee2e6;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  :root {
+    --tile-size: var(--tile-size-mobile);
+    --font-size-base: 0.875rem;
+    --spacing-lg: 0.75rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --tile-size: 52px;
+    --max-content-width: 500px;
+  }
+}
+
+
+/* Animations */
+/**
+ * Animation Definitions
+ * Tüm animasyon keyframe'leri ve utility class'ları
+ */
+
+/* Keyframe Animations */
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(90deg);
+    background-color: var(--color-surface-variant);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-5px);
+  }
+  40%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToTop {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-10px);
+  }
+  70% {
+    transform: translateY(-5px);
+  }
+  90% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 7% {
+    transform: rotateZ(0);
+  }
+  15% {
+    transform: rotateZ(-15deg);
+  }
+  20% {
+    transform: rotateZ(10deg);
+  }
+  25% {
+    transform: rotateZ(-10deg);
+  }
+  30% {
+    transform: rotateZ(6deg);
+  }
+  35% {
+    transform: rotateZ(-4deg);
+  }
+  40%, 100% {
+    transform: rotateZ(0);
+  }
+}
+
+/* Animation Utility Classes */
+.animate-flip {
+  animation: flip var(--duration-flip) ease-in-out;
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+
+.animate-shake {
+  animation: shake var(--duration-shake) ease-in-out;
+}
+
+.animate-pop {
+  animation: pop var(--duration-pop) ease-in-out;
+}
+
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.animate-fade-out {
+  animation: fadeOut var(--transition-normal) ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-normal) ease-out;
+}
+
+.animate-scale-out {
+  animation: scaleOut var(--transition-normal) ease-out;
+}
+
+.animate-slide-in-top {
+  animation: slideInFromTop var(--transition-normal) ease-out;
+}
+
+.animate-slide-out-top {
+  animation: slideOutToTop var(--transition-normal) ease-out;
+}
+
+/* Animation States */
+.animation-paused {
+  animation-play-state: paused;
+}
+
+.animation-running {
+  animation-play-state: running;
+}
+
+/* Transition Utilities */
+.transition-all {
+  transition: all var(--transition-normal);
+}
+
+.transition-colors {
+  transition: background-color var(--transition-normal), 
+              border-color var(--transition-normal), 
+              color var(--transition-normal);
+}
+
+.transition-transform {
+  transition: transform var(--transition-normal);
+}
+
+.transition-opacity {
+  transition: opacity var(--transition-normal);
+}
+
+.transition-fast {
+  transition-duration: var(--transition-fast);
+}
+
+.transition-slow {
+  transition-duration: var(--transition-slow);
+}
+
+/* Hover Animations */
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform var(--transition-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(255, 139, 199, 0.3);
+  transition: box-shadow var(--transition-normal);
+}
+
+/* Focus Animations */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 139, 199, 0.5);
+  transition: box-shadow var(--transition-fast);
+}
+
+/* Loading Animations */
+.loading-dots::after {
+  content: '';
+  animation: loadingDots 1.5s steps(5, end) infinite;
+}
+
+@keyframes loadingDots {
+  0%, 20% {
+    color: rgba(255, 255, 255, 0);
+    text-shadow: 
+      .25em 0 0 rgba(255, 255, 255, 0),
+      .5em 0 0 rgba(255, 255, 255, 0);
+  }
+  40% {
+    color: white;
+    text-shadow: 
+      .25em 0 0 rgba(255, 255, 255, 0),
+      .5em 0 0 rgba(255, 255, 255, 0);
+  }
+  60% {
+    text-shadow: 
+      .25em 0 0 white,
+      .5em 0 0 rgba(255, 255, 255, 0);
+  }
+  80%, 100% {
+    text-shadow: 
+      .25em 0 0 white,
+      .5em 0 0 white;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-pulse {
+    animation: none;
+  }
+}
+
+/* Performance Optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* GPU Acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+
+/* Feature Styles */
+@import '../features/ui/ui.css';
+@import '../features/game/game.css';
+@import '../features/keyboard/keyboard.css';
+@import '../features/dialogs/dialogs.css';
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Quicksand', Arial, sans-serif;
+  text-align: center;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Main game container */
+#game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  padding: 0 16px;
+  margin-top: var(--navbar-height);
+}
+
+#game-board-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#keyboard-container {
+  margin-bottom: 20px;
+}
+
+/* Loading state */
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.loading-spinner {
+  font-size: 48px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Error fallback */
+#error-fallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10000;
+  text-align: center;
+}
+
+#error-fallback h2 {
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+#error-fallback p {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+  max-width: 400px;
+}
+
+#error-fallback button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#error-fallback button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Debug info */
+#debug-info {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  z-index: 1000;
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  #game-container {
+    padding: 0 12px;
+  }
+  
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  #navbar-icons-right,
+  #debug-info {
+    display: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-background: #000000;
+    --color-text-primary: #ffffff;
+    --color-border: #ffffff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
