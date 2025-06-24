@@ -302,10 +302,20 @@ class MultiplayerService {
   handleRealTimeUpdate(playerId, oldData, newData) {
     const player = { id: playerId, ...newData };
     
+    console.log('🎯 Processing real-time update:', {
+      playerId, 
+      oldAttempt: oldData.currentAttempt,
+      newAttempt: newData.currentAttempt,
+      oldLetters: oldData.lettersFound,
+      newLetters: newData.lettersFound,
+      isCompleted: newData.isCompleted
+    });
+    
     // 🎯 Specific notification types based on what changed
     
     // 1. First attempt made
     if (oldData.currentAttempt === 0 && newData.currentAttempt === 1) {
+      console.log('✅ First attempt detected');
       if (this.onPlayerUpdate) {
         this.onPlayerUpdate({
           ...player,
@@ -313,10 +323,12 @@ class MultiplayerService {
           type: 'first_attempt'
         });
       }
+      return; // Return after notification
     }
     
     // 2. Subsequent attempts (no letters found)
-    else if (newData.currentAttempt > oldData.currentAttempt && newData.lettersFound === 0) {
+    if (newData.currentAttempt > oldData.currentAttempt && newData.lettersFound === oldData.lettersFound) {
+      console.log('✅ New attempt with no letters detected');
       if (this.onPlayerUpdate) {
         this.onPlayerUpdate({
           ...player,
@@ -324,11 +336,12 @@ class MultiplayerService {
           type: 'attempt_no_letters'
         });
       }
+      return; // Return after notification
     }
     
     // 3. Letters found in attempt
-    else if (newData.lettersFound > oldData.lettersFound) {
-      const lettersFound = newData.lettersFound - oldData.lettersFound;
+    if (newData.lettersFound > oldData.lettersFound) {
+      console.log('✅ Letters found detected');
       if (this.onPlayerUpdate) {
         this.onPlayerUpdate({
           ...player,
@@ -336,10 +349,12 @@ class MultiplayerService {
           type: 'letters_found'
         });
       }
+      return; // Return after notification
     }
     
     // 4. Game completed successfully
     if (!oldData.isCompleted && newData.isCompleted) {
+      console.log('✅ Game completion detected');
       if (this.onGameComplete) {
         this.onGameComplete({
           ...player,
@@ -347,10 +362,12 @@ class MultiplayerService {
           type: 'game_won'
         });
       }
+      return; // Return after notification
     }
     
     // 5. Game failed (6 attempts, not completed)
     if (newData.currentAttempt >= 6 && !newData.isCompleted && oldData.currentAttempt < 6) {
+      console.log('✅ Game failure detected');
       if (this.onPlayerUpdate) {
         this.onPlayerUpdate({
           ...player,
@@ -358,10 +375,12 @@ class MultiplayerService {
           type: 'game_lost'
         });
       }
+      return; // Return after notification
     }
     
     // 6. Online status changes
     if (oldData.isOnline !== newData.isOnline) {
+      console.log('✅ Online status change detected');
       if (newData.isOnline) {
         if (this.onPlayerJoin) {
           this.onPlayerJoin({
@@ -379,7 +398,10 @@ class MultiplayerService {
           });
         }
       }
+      return; // Return after notification
     }
+    
+    console.log('⚠️ No specific notification condition met, using generic update');
   }
 
   /**
