@@ -7,7 +7,7 @@ export const GAME_CONFIG = {
   WORD_LENGTH: 5,
   MAX_ATTEMPTS: 6,
   INTERVAL_DURATION: 4 * 60 * 60 * 1000, // 4 hours in milliseconds
-  SERVER_START_TIME: new Date(2024, 11, 27, 4, 0, 0), // 27 Dec 2024, 08:00
+  SERVER_START_TIME: new Date(2024, 11, 26, 20, 0, 0), // 27 Dec 2024, 08:00
 };
 
 export const UI_CONFIG = {
